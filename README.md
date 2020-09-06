@@ -4,7 +4,7 @@ A universal mod for Unity games that lets you change the scale of the world / ca
 
 ## Installing the mod
 
-1. [Install MelonLoader by following the instructions on their page](https://melonwiki.xyz/);
+1. [Install MelonLoader by following the instructions on their page](https://melonwiki.xyz/#/?id=requirements);
 2. [Download the .dll of the latest release of this mod](https://github.com/Raicuparta/unity-scale-adjuster/releases/latest);
 3. Copy `ScaleAdjuster.dll` to `[Your Game's Directory]/Mods`;
 4. Example `C:\Program Files (x86)\Steam\steamapps\common\Overload\Mods\ScaleAdjuster.dll`
