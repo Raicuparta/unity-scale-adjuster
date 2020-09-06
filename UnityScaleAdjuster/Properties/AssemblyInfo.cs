@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 using MelonLoader;
 using Raicuparta.UnityScaleAdjuster;
 
-[assembly: MelonInfo(typeof(UnityScaleAdjuster), "UnityScaleAdjuster", "0.1.0", "Raicuparta")]
+[assembly: MelonInfo(typeof(UnityScaleAdjuster), "UnityScaleAdjuster", "0.2.0", "Raicuparta")]
 [assembly: MelonGame(null, null)]
 
 // General Information about an assembly is controlled through the following
