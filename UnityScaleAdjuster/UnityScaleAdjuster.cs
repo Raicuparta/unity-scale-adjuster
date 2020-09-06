@@ -10,9 +10,11 @@ namespace Raicuparta.UnityScaleAdjuster
         const string CameraScaleArg = "cameraScale";
         const float ScaleUpMultiplier = 0.9f;
         const float ScaleDownMultiplier = 1.1f;
-        MethodInfo GetKeyDownMethod;
         Type CameraType;
         Type TransformType;
+        Type Vector3Type;
+        MethodInfo GetKeyDownMethod;
+        MethodInfo Vector3MultiplyMethod;
 
         public override void OnApplicationStart()
         {
@@ -20,6 +22,9 @@ namespace Raicuparta.UnityScaleAdjuster
             GetKeyDownMethod = GetInputType().GetMethod("GetKeyDown", new[] { typeof(string) });
             CameraType = GetUnityType("Camera");
             TransformType = GetUnityType("Transform");
+            Vector3Type = GetUnityType("Vector3");
+            Vector3MultiplyMethod = Vector3Type.GetMethod("op_Multiply", new[] { Vector3Type, typeof(float) });
+
         }
 
         public override void OnLevelWasLoaded(int level)
@@ -48,10 +53,8 @@ namespace Raicuparta.UnityScaleAdjuster
         private void MultiplyCameraScale(float scale)
         {
             var mainCamera = GetMainCameraTransform();
-            var vector3Type = GetUnityType("Vector3");
             var currentScale = GetValue(TransformType, "localScale", mainCamera);
-            var multiplyMethod = vector3Type.GetMethod("op_Multiply", new[] { vector3Type, typeof(float) });
-            var multipliedScale = multiplyMethod.Invoke(null, new object[] { currentScale, scale });
+            var multipliedScale = MultiplyVector3(currentScale, scale);
             SetCameraScale(multipliedScale);
         }
 
@@ -62,13 +65,20 @@ namespace Raicuparta.UnityScaleAdjuster
 
         private void SetScaleToUser()
         {
-            Camera.main.transform.localScale = Vector3.one * GetUserScale();
+            SetCameraScale(MultiplyVector3(GetValue(Vector3Type, "one"), GetUserScale()));
+        }
+
+        private object MultiplyVector3(object vector3, float multiplier)
+        {
+            return Vector3MultiplyMethod.Invoke(null, new object[] { vector3, multiplier });
         }
 
         private void SetCameraScale(object scale)
         {
             var mainCamera = GetMainCameraTransform();
             SetValue(TransformType, "localScale", scale, mainCamera);
+
+            MelonLogger.Log($"Changed camera scale to {GetValue(Vector3Type, "x", scale)}");
         }
 
         private float GetCommandLineArgument(string name)
@@ -76,7 +86,6 @@ namespace Raicuparta.UnityScaleAdjuster
             string[] args = System.Environment.GetCommandLineArgs();
             for (int i = 0; i < args.Length; i++)
             {
-                Debug.Log("ARG " + i + ": " + args[i]);
                 if (args[i] == $"-{name}")
                 {
                     return float.Parse(args[i + 1]);
@@ -98,13 +107,19 @@ namespace Raicuparta.UnityScaleAdjuster
 
         private object GetValue(Type type, string propertyName, object instance = null)
         {
-            return type.GetProperty(propertyName).GetValue(instance, null);
+            var property = type.GetProperty(propertyName);
+            if (property != null)
+            {
+                return property.GetValue(instance, null);
+            }
+            return type.GetField(propertyName).GetValue(instance);
+
+
         }
 
         private void SetValue(Type type, string propertyName, object value, object instance = null)
         {
             var property = type.GetProperty(propertyName);
-            MelonLogger.Log($"property {propertyName} {property == null}");
             type.GetProperty(propertyName).SetValue(instance, value, null);
         }
 
