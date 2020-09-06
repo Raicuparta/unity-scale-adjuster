@@ -1,7 +1,6 @@
 ﻿using MelonLoader;
 using System;
 using System.Reflection;
-using UnityEngine;
 
 namespace Raicuparta.UnityScaleAdjuster
 {
