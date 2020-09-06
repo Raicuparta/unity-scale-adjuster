@@ -32,3 +32,13 @@ A universal mod for Unity games that lets you change the scale of the world / ca
       * Select "Properties";
       * Add `-cameraScale XXX` after the path in the "Target" field, where `XXX` is the scale value from before;
       * Example target value: `"C:\Program Files (x86)\Steam\steamapps\common\Overload\Overload.exe" -cameraScale 1.2`
+5. The mod will try to set your preferred scale automatically whenever a new level / scene loads;
+6. If this doesn't work or if the game resets the scale, press **F5** to manually set the scale to value in `-cameraScale` again.
+
+## Keys
+
+Already mentioned in the instructions above, but to summarize:
+
+* **F3** scales the world down;
+* **F4** scales the world up;
+* **F5** sets the scale to the user defined scale in `-cameraScale` launch parameter;
